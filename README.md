@@ -8,8 +8,16 @@ Below if a list of included tools and short documentation for each.
 
 Bulldozer is a simple tool to modify the MOM bathymetry/topography file, adding or removing land points.
 
-It is used in a two step process:
-1. __mark__: mark out the changes to be made. Each change is written as a line into an output file.
-2. __drive__: apply the changes created above to a topography file. The result will be a new file.
+It is used as follows:
 
+```bash
+./bulldozer.py orig_topog.nc new_topog.nc changes.csv
+```
 
+It takes `orig_topog.nc` as input and applies `changes.csv` to create `new_topog.nc`.
+
+`changes.csv` is a comma separated list of changes, one per line. It must contain a header like the following:
+
+```
+i index, j index, original depth, new depth
+```
