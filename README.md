@@ -11,13 +11,24 @@ Bulldozer is a simple tool to modify the MOM bathymetry/topography file, adding 
 It is used as follows:
 
 ```bash
-./bulldozer.py orig_topog.nc new_topog.nc changes.csv
+echo "112, 246, 0.0, 50.0" | ./bulldozer.py topog.nc --new_topog new_topog.nc
 ```
 
-It takes `orig_topog.nc` as input and applies `changes.csv` to create `new_topog.nc`.
+The input is taken from stdin. The format of the input is a list of
+comma-separated line with the following values:
 
-`changes.csv` is a comma separated list of changes, one per line. It must contain a header like the following:
+'i index', 'j index', 'original depth', 'new depth'
 
-```
-i index, j index, original depth, new depth
-```
+For example to run on a single point:
+
+echo "112, 246, 0.0, 50.0" | ./bulldozer.py test/topog.nc
+
+To run a whole file:
+
+cat file.csv | ./bulldozer.py test/topog.nc
+
+Where the contents of file could look something like this:
+
+112, 246, 0.0, 50.0
+113, 246, 0.0, 50.0
+

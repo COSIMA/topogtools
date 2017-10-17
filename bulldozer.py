@@ -2,6 +2,7 @@
 
 import sys
 import os
+import time
 import shutil
 import argparse
 import netCDF4 as nc
@@ -114,10 +115,10 @@ def main():
 
         depth = nf.variables['depth']
 
-        for l in sys.stdin.readlines():
+        for line in sys.stdin.readlines():
 
             try:
-                l = l.split(',')
+                l = line.split(',')
                 i = int(l[0].strip())
                 j = int(l[1].strip())
                 orig_depth = float(l[2].strip())
@@ -139,8 +140,12 @@ def main():
                     break
 
             if not err:
-                # Update the netcdf history with this change.
-                pass
+                hist_str = time.ctime(time.time()) + ' : echo ' + \
+                            line.strip() + ' | ' + ' '.join(sys.argv)
+                if 'history' not in nf.ncattrs():
+                    nf.history = hist_str
+                else:
+                    nf.history = nf.history + hist_str
 
     if err and args.new_topog is not None:
         shutil.remove(args.new_topog)
