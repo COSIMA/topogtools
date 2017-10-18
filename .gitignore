@@ -1,5 +1,7 @@
 #
 test/test_data/new_topog.nc
+test/test_data/new_kmt.nc
+test/test_data/new_i2o.nc
 *.swp
 
 # Byte-compiled / optimized / DLL files
