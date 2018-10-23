@@ -82,6 +82,7 @@ def main():
     parser.add_argument("start_j", help="j coordinate of a point in basin/island.", type=int)
     parser.add_argument("input_file", help="The input bathymetry file.")
     parser.add_argument("output_file", help="The output bathymetry file.")
+    parser.add_argument("output_changes_file", help="The name of text file containing changed points.")
     parser.add_argument("--cut_or_fill_depth", default=None, type=float,
                         help="The depth to cut (or fill) to.")
     parser.add_argument("--fill", action='store_true', default=False,
@@ -100,7 +101,6 @@ def main():
                                              args.cut_or_fill_depth, args.fill)
 
     depth[list(zip(*connected_points))] = args.cut_or_fill_depth
-
     f.variables['depth'][:] = depth
 
     history = create_history_record()
@@ -110,6 +110,17 @@ def main():
         f.history = history
 
     f.close()
+
+    # Write out changes in format:
+    # istart iend jstart jend new_depth comment
+    with open(args.output_changes_file, 'r+'):
+        for p in connected_points:
+            jstart = jend = p[0]
+            istart = iend = p[1]
+            new_depth = args.cut_or_fill_depth
+            comment = '""'
+
+    return 0
 
 
 if __name__ == '__main__':
