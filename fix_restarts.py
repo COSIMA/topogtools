@@ -52,26 +52,26 @@ def copy_data(args):
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("cold_start_dir",
-                        help="Name of directory containing collated restart files from a cold-start run using the new bathymetry.")
-    parser.add_argument("orig_dir",
-                        help="Name of directory containing collated restart files from the original bathymetry.")
+    parser.add_argument("template_dir",
+                        help="Name of directory containing collated restart files from a run using the new bathymetry.")
+    parser.add_argument("old_dir",
+                        help="Name of directory containing collated restart files from a run using the old bathymetry.")
     parser.add_argument("output_dir",
-                        help="Name of the output directory which will contain fixed restarts.")
+                        help="Name of the output directory which will contain new restarts.")
     args = parser.parse_args()
 
-    cold_start_files = [os.path.join(args.cold_start_dir, f) for f in mom_restart_files]
-    orig_files = [os.path.join(args.orig_dir, f) for f in mom_restart_files]
+    template_files = [os.path.join(args.template_dir, f) for f in mom_restart_files]
+    old_files = [os.path.join(args.old_dir, f) for f in mom_restart_files]
     output_files = [os.path.join(args.output_dir, f) for f in mom_restart_files]
 
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
 
-    for csf, of in zip(cold_start_files, output_files):
+    for csf, of in zip(template_files, output_files):
         shutil.copy(csf, of)
 
     pool = mp.Pool(4)
-    pool.map(copy_data, zip(orig_files, output_files))
+    pool.map(copy_data, zip(old_files, output_files))
 
 if __name__ == '__main__':
     sys.exit(main())
