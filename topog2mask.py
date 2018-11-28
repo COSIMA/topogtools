@@ -12,8 +12,13 @@ def make_mask(topog_filename, mask_filename, ice=False):
 
     with nc.Dataset(topog_filename, 'r') as tf, \
             nc.Dataset(mask_filename, 'w') as mf:
-        num_lons = tf.dimensions['xx'].size
-        num_lats = tf.dimensions['yy'].size
+        try:
+            num_lons = tf.dimensions['xx'].size
+            num_lats = tf.dimensions['yy'].size
+        except KeyError:
+            num_lons = tf.dimensions['nx'].size
+            num_lats = tf.dimensions['ny'].size
+
         mf.createDimension('nx', num_lons)
         mf.createDimension('ny', num_lats)
         if ice:
@@ -22,8 +27,8 @@ def make_mask(topog_filename, mask_filename, ice=False):
             mask = mf.createVariable('mask', 'f8', dimensions=('ny', 'nx'))
         # CICE and MOM use 0 as masked
         m = np.zeros_like(mask)
-        m[:] = 0
-        m[np.where(tf.variables['depth'][:] > 0)] = 1
+        m[:] = 1.0
+        m[np.where(tf.variables['depth'][:] <= 0.0)] = 0.0
         mask[:] = m[:]
 
 

@@ -48,6 +48,8 @@ def unmask_file(filename, mask):
 
             f.variables[v][:] = var[:]
 
+    return 0
+
 def main():
 
     parser = argparse.ArgumentParser()

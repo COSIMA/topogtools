@@ -119,46 +119,25 @@ def bulldoze(new_topog, force=False):
 
     return err
 
-def make_ice_mask(mask_filename, topog_filename, num_lons, num_lats):
-
-    with nc.Dataset(topog_filename, 'r') as tf, \
-            nc.Dataset(mask_filename, 'w') as mf:
-        mf.createDimension('nx', num_lons)
-        mf.createDimension('ny', num_lats)
-        mask = mf.createVariable('kmt', 'f8', dimensions=('ny', 'nx'))
-        # CICE uses 0 as masked
-        m = np.zeros_like(mask)
-        m[:] = 0
-        m[np.where(tf.variables['depth'][:] > 0)] = 1
-        mask[:] = m[:]
-
-
 def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('orig_topog', help='The topog file to be changed.')
-    parser.add_argument('--new_topog', default=None, help="""
-                        The new topog file. If not provided the original will
-                        be changed in-place (untested)""")
+    parser.add_argument('new_topog',  help='The new topog file.')
     parser.add_argument('--force', default=False,
                         help="Force changes, don't exit on a bad change.")
-    parser.add_argument('--ice_mask', default=None,
-                        help="Make ice land-sea mask based on new topography.")
 
     args = parser.parse_args()
 
     # Check that files exist
-    if args.new_topog is not None:
-        if os.path.exists(args.new_topog):
-            print('Error: {} already exists'.format(args.new_topog),
-                  file=sys.stderr)
-            parser.print_help()
-            return 1
-        # Make new_topog
-        shutil.copyfile(args.orig_topog, args.new_topog)
-        new_topog = args.new_topog
-    else:
-        new_topog = args.orig_topog
+    if os.path.exists(args.new_topog):
+        print('Error: {} already exists'.format(args.new_topog),
+              file=sys.stderr)
+        parser.print_help()
+        return 1
+    # Make new_topog
+    shutil.copyfile(args.orig_topog, args.new_topog)
+    new_topog = args.new_topog
 
     if not os.path.exists(args.orig_topog):
         print('Error: {} not found'.format(args.orig_topog), file=sys.stderr)
@@ -169,9 +148,6 @@ def main():
     if err and args.new_topog is not None:
         os.remove(args.new_topog)
         return 1
-
-    if args.ice_mask:
-        make_ice_mask(args.ice_mask, args.new_topog, 360, 300)
 
     return 0
 

@@ -48,3 +48,13 @@ Example use:
 ./unmask.py test/test_data/i2o.nc test/test_data/kmt.nc kmt --output_file test/test_data/new_i2o.nc --flip_mask
 ```
 
+## topog2mask
+
+topog2mask.py takes a topog file and outputs a mask.
+
+Example use:
+
+```bash
+./topog2mask.py test/test_data/topog.nc test/test_data/new_kmt.nc
+```
+
