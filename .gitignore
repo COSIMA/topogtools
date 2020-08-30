@@ -1,4 +1,11 @@
 #
+check_nonadvective_mosaic
+do_partial_cells
+fix_nonadvective_mosaic
+float_vgrid
+gen_topo
+min_depth
+*.mod
 test/test_data/new_topog.nc
 test/test_data/new_kmt.nc
 test/test_data/new_i2o.nc
