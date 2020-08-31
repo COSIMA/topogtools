@@ -99,7 +99,7 @@ Originally from [here](https://github.com/aekiss/notebooks/blob/3f2fbc2/bathymet
 
 ### non-advective.ipynb
 A Jupyter notebook with some checks on non-advective edges (i.e. choked channels) and cells. This can catch some issues that `check_nonadvective_mosaic` and `fix_nonadvective_mosaic` don't detect/fix.
-Originally from [here](https://github.com/aekiss/notebooks/blob/3f2fbc2/bathymetry.ipynb).
+Originally from [here](https://github.com/aekiss/notebooks/blob/f1ec5a2c/non-advective.ipynb).
 
 ### bulldozer
 
