@@ -17,7 +17,7 @@ Takes no arguments but requires `ocean_vgrid.nc` to be present.
 ### gen_topo
 
 Generate a new topography file `topog_new.nc` from GEBCO bathymetry.
-Takes no arguments but requires `mosaic.nc` and `gebco_2014_rot.nc` to be present.
+Takes no arguments but requires `mosaic.nc`, `ocean_mosaic.nc`, `ocean_hgrid.nc` and `gebco_2014_rot.nc` to be present.
 
 ### deseas
 
