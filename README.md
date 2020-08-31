@@ -60,7 +60,7 @@ Can produce non-advective cells.
 
 ### check_nonadvective_mosaic
 
-Check for cells that are nonadvective on a B grid.
+Check for cells that are nonadvective on a B grid. Doesn't detect choked channels in all cases - use `non-advective.ipynb` (below) to find non-advective edges.
 Usage:
 ```bash
 ./check_nonadvective_mosaic topog.nc
@@ -69,7 +69,7 @@ Requires `ocean_vgrid.nc` to be present.
 
 ### fix_nonadvective_mosaic
 
-Fix cells that are nonadvective on a B grid.
+Fix cells that are non-advective on a B grid. Doesn't detect or fix choked channels in all cases - use `non-advective.ipynb` (below) to find non-advective edges.
 Usage:
 ```bash
 ./fix_nonadvective_mosaic topog_in.nc topog_out.nc
@@ -92,6 +92,14 @@ Usage (also see `apply_mask.py -h`):
 ```
 All ocean cells in `topog_in.nc` are converted to land cells in `topog_out.nc` if they are land cells in `ocean_mask.nc`.
 All land cells in `topog_in.nc` are converted to ocean cells in `topog_out.nc` if they are ocean cells in `ocean_mask.nc`, with a depth equal to the smallest positive nonzero depth in `topo_in.nc`.
+
+### bathymetry.ipynb
+A Jupyter notebook with some checks on partial cells and minimum depth, and comparison between grids at particular locations.
+Originally from [here](https://github.com/aekiss/notebooks/blob/3f2fbc2/bathymetry.ipynb).
+
+### non-advective.ipynb
+A Jupyter notebook with some checks on non-advective edges (i.e. choked channels) and cells. This can catch some issues that `check_nonadvective_mosaic` and `fix_nonadvective_mosaic` don't detect/fix.
+Originally from [here](https://github.com/aekiss/notebooks/blob/3f2fbc2/bathymetry.ipynb).
 
 ### bulldozer
 
