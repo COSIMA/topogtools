@@ -4,12 +4,15 @@ do_partial_cells
 fix_nonadvective_mosaic
 float_vgrid
 gen_topo
+deseas
 min_depth
+min_max_depth
 *.mod
 test/test_data/new_topog.nc
 test/test_data/new_kmt.nc
 test/test_data/new_i2o.nc
 *.swp
+._*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -8,5 +8,7 @@ ifort do_partial_cells.f90  -o do_partial_cells $ff
 ifort fix_nonadvective_mosaic.f90 -o fix_nonadvective_mosaic $ff
 ifort float_vgrid.f90 -o float_vgrid $ff
 ifort min_depth.f90 -o min_depth $ff
+ifort min_max_depth.f90 -o min_max_depth $ff
+ifort deseas.f90 -o deseas $ff
 ifort kdtree2.f90 gen_topo.f90 -o gen_topo $ff
 
