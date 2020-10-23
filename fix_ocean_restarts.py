@@ -24,8 +24,8 @@ mom_restart_files = ['ocean_age.res.nc', 'ocean_bih_friction.res.nc',
                      'ocean_density.res.nc', 'ocean_sbc.res.nc',
                      'ocean_temp_salt.res.nc',
                      'ocean_velocity_advection.res.nc', 'ocean_barotropic.res.nc',
-                     'ocean_con_temp.res.nc', 'ocean_frazil.res.nc',
-                     'ocean_thickness.res.nc',
+                     'ocean_pot_temp.res.nc',
+                     'ocean_frazil.res.nc', 'ocean_thickness.res.nc',
                      'ocean_velocity.res.nc']
 
 def copy_data(args):
@@ -43,11 +43,12 @@ def copy_data(args):
 
             # Copy over level by level to save memory
             print('Processing var {}'.format(var))
-            in_data = in_fp.variables[var][0, :, :, :]
-            out_data = out_fp.variables[var][0, :, :, :]
-            mask = np.logical_and(np.logical_not(in_data.mask),
-                                  np.logical_not(out_data.mask))
-            out_data[np.where(mask)] = in_data[np.where(mask)]
+            for l in range(75):
+                in_data = in_fp.variables[var][0, l, :, :]
+                out_data = out_fp.variables[var][0, l, :, :]
+                mask = np.logical_and(np.logical_not(in_data.mask),
+                                      np.logical_not(out_data.mask))
+                out_data[np.where(mask)] = in_data[np.where(mask)]
 
 def main():
 
@@ -70,7 +71,7 @@ def main():
     for csf, of in zip(template_files, output_files):
         shutil.copy(csf, of)
 
-    pool = mp.Pool(4)
+    pool = mp.Pool(1)
     pool.map(copy_data, zip(old_files, output_files))
 
 if __name__ == '__main__':
