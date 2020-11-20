@@ -17,13 +17,14 @@ Remove masks from all fields in a file using nearest neighbour.
 def unmask_2d(var, mask, missing_value):
 
     if mask is None:
-        assert missing_value is not None, 'Need mask or missing_value'
-        mask = np.zeros_like(var)
-        mask[np.where(var >= missing_value)] = 1
+        assert missing_value is not None
+        mask = np.zeros_like(var.data)
+        mask[np.where(var.data == missing_value)] = 1
 
     ind = nd.distance_transform_edt(mask[:, :],
                                     return_distances=False,
                                     return_indices=True)
+
     var[:, :] = var[tuple(ind)]
     print('2d done', flush=True)
 
@@ -34,7 +35,7 @@ def unmask_3d(v, mask, missing_value):
 
 def unmask_4d(v, mask, missing_value):
     for t in range(v.shape[0], mask, missing_value):
-        unmask_3d(v[t, :])
+        unmask_3d(v[t, :], missing_value)
 
 
 def unmask_file(filename, mask=None, missing_value=None, skip_vars=[]):
@@ -45,13 +46,17 @@ def unmask_file(filename, mask=None, missing_value=None, skip_vars=[]):
                 continue
 
             var = f.variables[v][:]
+            if mask is None and missing_value is None:
+                missing_value = var.fill_value
 
             if len(var.shape) == 4:
-                unmask_4d(var)
+                unmask_4d(var, mask, missing_value)
             elif len(var.shape) == 3:
-                unmask_3d(var)
-            else:
+                unmask_3d(var, mask, missing_value)
+            elif len(var.shape) == 2:
                 unmask_2d(var, mask, missing_value)
+            else:
+                print('WARNING: not unmasking {} because it is 1d'.format(v))
 
             f.variables[v][:] = var[:]
 
@@ -61,10 +66,9 @@ def unmask_file(filename, mask=None, missing_value=None, skip_vars=[]):
 def apply_mask_2d(v, landmask, mask_val):
     v[np.where(landmask)] = mask_val
 
-
 def apply_mask_3d(v, landmask, mask_val):
     for d in range(v.shape[0]):
-        apply_landmask_2d([v[d, :], landmask, mask_val)
+        apply_mask_2d(v[d, :], landmask, mask_val)
 
 def apply_mask_4d(v, landmask, mask_val):
     for t in range(v.shape[0], landmask, mask_val):
@@ -81,11 +85,13 @@ def apply_mask_file(filename, mask, mask_val=0.0, skip_vars=[]):
             var = f.variables[v][:]
 
             if len(var.shape) == 4:
-                unmask_4d(var)
+                apply_mask_4d(var, mask, mask_val)
             elif len(var.shape) == 3:
-                unmask_3d(var)
+                apply_mask_3d(var, mask, mask_val)
+            elif len(var.shape) == 2:
+                apply_mask_2d(var, mask, mask_val)
             else:
-                unmask_2d(var, mask, missing_value)
+                print('WARNING: not applying mask {} because it is 1d'.format(v))
 
             f.variables[v][:] = var[:]
 

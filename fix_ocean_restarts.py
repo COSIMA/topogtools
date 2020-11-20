@@ -59,6 +59,8 @@ def main():
                         help="Name of directory containing collated restart files from a run using the old bathymetry.")
     parser.add_argument("output_dir",
                         help="Name of the output directory which will contain new restarts.")
+    parser.add_argument("--nprocs", default=1, type=int,
+                        help="Number of processes to use.")
     args = parser.parse_args()
 
     template_files = [os.path.join(args.template_dir, f) for f in mom_restart_files]
@@ -71,7 +73,7 @@ def main():
     for csf, of in zip(template_files, output_files):
         shutil.copy(csf, of)
 
-    pool = mp.Pool(1)
+    pool = mp.Pool(args.nprocs)
     pool.map(copy_data, zip(old_files, output_files))
 
 if __name__ == '__main__':
