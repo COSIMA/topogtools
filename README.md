@@ -65,7 +65,7 @@ Usage:
 ```bash
 ./check_nonadvective_mosaic topog.nc
 ```
-Requires `ocean_vgrid.nc` to be present.
+Requires `ocean_vgrid.nc` to be present, with all double precision numbers exactly representable as singles (use `float_vgrid` to guarantee this).
 
 ### fix_nonadvective_mosaic
 
@@ -74,7 +74,7 @@ Usage:
 ```bash
 ./fix_nonadvective_mosaic topog_in.nc topog_out.nc
 ```
-Requires `ocean_vgrid.nc` to be present.
+Requires `ocean_vgrid.nc` to be present, with all double precision numbers exactly representable as singles (use `float_vgrid` to guarantee this).
 
 ## Python tools
 
