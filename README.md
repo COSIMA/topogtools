@@ -83,7 +83,7 @@ Requires `ocean_vgrid.nc` to be present, with all double precision numbers exact
 `editTopo.py` provides a GUI for hand-editing `topog.nc` files, recording every change, and applying these changes to other files. This is an updated version of Alistair Adcroft's `editTopo.py` from [here](https://github.com/aekiss/MOM6-examples/blob/1c3dc5216139f84b20ce3a5d8ea758bdc7912e8e/ice_ocean_SIS2/OM4_025/preprocessing/editTopo.py) and is under a [LGPLv3 license](https://github.com/NOAA-GFDL/MOM6-examples/blob/dev/gfdl/LICENSE.md).
 For usage details, do `./editTopo.py -h`.
 
-### applyMask
+### apply_mask
 
 Apply mask from `ocean_mask.nc` to a topography file. 
 Usage (also see `apply_mask.py -h`):
@@ -91,7 +91,7 @@ Usage (also see `apply_mask.py -h`):
 ./apply_mask.py topog_in.nc ocean_mask.nc topog_out.nc
 ```
 All ocean cells in `topog_in.nc` are converted to land cells in `topog_out.nc` if they are land cells in `ocean_mask.nc`.
-All land cells in `topog_in.nc` are converted to ocean cells in `topog_out.nc` if they are ocean cells in `ocean_mask.nc`, with a depth equal to the smallest positive nonzero depth in `topo_in.nc`.
+All land cells in `topog_in.nc` are converted to ocean cells in `topog_out.nc` if they are ocean cells in `ocean_mask.nc`, with a depth equal to the smallest positive nonzero depth in `topog_in.nc`.
 
 ### bathymetry.ipynb
 A Jupyter notebook with some checks on partial cells and minimum depth, and comparison between grids at particular locations.
