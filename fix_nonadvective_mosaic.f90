@@ -77,7 +77,7 @@ do j=2,nj-1
       if(topog_halo(i,j)>0.5) then
          sw=topog_halo(i-1,j)<0.5 .or. topog_halo(i-1,j-1)<0.5 .or. topog_halo(i,j-1)<0.5
          se=topog_halo(i,j-1)<0.5 .or. topog_halo(i+1,j-1)<0.5 .or. topog_halo(i+1,j)<0.5
-         ne=topog_halo(i,j+1)<0.5 .or. topog_halo(i,j+1)<0.5 .or. topog_halo(i+1,j+1)<0.5
+         ne=topog_halo(i+1,j)<0.5 .or. topog_halo(i,j+1)<0.5 .or. topog_halo(i+1,j+1)<0.5
          nw=topog_halo(i-1,j)<0.5 .or. topog_halo(i-1,j+1)<0.5 .or. topog_halo(i,j+1)<0.5
          if (all([se,sw,ne,nw])) then
             topog_halo(i,j)=0.0
