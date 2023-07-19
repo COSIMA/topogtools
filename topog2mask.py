@@ -26,8 +26,10 @@ def make_mask(topog_filename, mask_filename, frac, ice=False):
         else:
             mask = mf.createVariable('mask', 'f8', dimensions=('ny', 'nx'))
         # CICE and MOM use 0 as masked
-        mask[:] = np.where((tf.variables['frac'][:] < frac) | (tf.variables['depth'][:] <= 0.0), 0, 1)
-
+        if (frac > 0.0):
+            mask[:] = np.where((tf.variables['frac'][:] < frac) | (tf.variables['depth'][:] <= 0.0), 0, 1)
+        else:
+            mask[:] = np.where(tf.variables['depth'][:] <= 0.0, 0, 1)
 
 def main():
 
