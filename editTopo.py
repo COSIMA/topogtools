@@ -42,7 +42,7 @@ def main():
 
     # Command line arguments
     parser = argparse.ArgumentParser(description='''Point-wise editing of topography.
-            Ignore all the controls in the toolbar at the top of the window.
+            Ignore all the control icons in the toolbar in the window.
             Zoom in and out with the scroll wheel.
             Pan the view with the North, South, East and West buttons.
             Use +, -, Flip buttons to modify the colormap.
@@ -102,6 +102,7 @@ def createGUI(fileName, variable, outFile, refFile, applyFile, nogui, overwrite)
     except:
         error('There was a problem opening input NetCDF file "'+fileName+'".')
 
+    print(f'Opened "{fileName}". Will write to "{outFile}" when window is closed.')
     rgVar = rg.variables[variable]  # handle to the variable
     dims = rgVar.dimensions  # tuple of dimensions
     depth = rgVar[:]  # Read the data
@@ -133,7 +134,6 @@ def createGUI(fileName, variable, outFile, refFile, applyFile, nogui, overwrite)
             self.data = None
             self.quadMesh = None
             self.cbar = None
-            self.ax = None
             self.syms = None
             self.useref = False
             self.textbox = None
@@ -151,6 +151,9 @@ def createGUI(fileName, variable, outFile, refFile, applyFile, nogui, overwrite)
             self.clim = 6000
             self.plotdiff = False
             self.fieldname = None
+            self.fig = plt.figure()
+            self.ax = self.fig.add_axes([0.08,0.12,0.75,0.8])
+            self.cax = self.fig.add_axes([0.85,0.12,0.05,0.8])
     All = Container()
     All.view = View(ni, nj)
     All.edits = Edits()
@@ -236,21 +239,20 @@ def createGUI(fileName, variable, outFile, refFile, applyFile, nogui, overwrite)
 
     # plt.rcParams['toolbar'] = 'None'  # don't use - also disables statusbar
 
-    def replot(All):
-        if All.cbar is not None:
-            All.cbar.remove()
-        h = plt.pcolormesh(All.data.longitude, All.data.latitude,
-                           All.data.plotfield, cmap=All.cmap,
-                           vmin=-All.clim, vmax=All.clim)
-        hc = plt.colorbar()
+    def replot():
+        h = All.ax.pcolormesh(All.data.longitude, All.data.latitude,
+                              All.data.plotfield, cmap=All.cmap,
+                              vmin=-All.clim, vmax=All.clim)
+        hc = plt.colorbar(mappable=h, cax=All.cax)
         return(h, hc)
 
-    All.quadMesh, All.cbar = replot(All)
+    All.quadMesh, All.cbar = replot()
     All.syms = All.edits.plot(fullData)
-    dir(All.syms)
-    All.ax = plt.gca()
     All.ax.set_xlim(All.data.xlim)
     All.ax.set_ylim(All.data.ylim)
+    manager = plt.get_current_fig_manager()
+    manager.set_window_title(f'{fileName} -> {outFile}')
+    manager.resize(900, 700)
 
     if fullData.haveref:
         def setsource(label):
@@ -338,11 +340,13 @@ def createGUI(fileName, variable, outFile, refFile, applyFile, nogui, overwrite)
         All.data.applyEdits(fullData, All.edits.ijz)
         plt.sca(All.ax)
         plt.cla()
-        All.quadMesh, All.cbar = replot(All)
+        All.quadMesh, All.cbar = replot()
         All.ax.set_xlim(All.data.xlim)
         All.ax.set_ylim(All.data.ylim)
         All.syms = All.edits.plot(fullData)
         plt.draw()
+
+    moveVisData(0, 0)  # kludge to display edits
 
     def moveWindowLeft(event): moveVisData(-1, 0)
     upperButtons.add('West', moveWindowLeft)
@@ -437,7 +441,7 @@ def createGUI(fileName, variable, outFile, refFile, applyFile, nogui, overwrite)
         All.data.applyEdits(fullData, All.edits.ijz)
         plt.sca(All.ax)
         plt.cla()
-        All.quadMesh, All.cbar = replot(All)
+        All.quadMesh, All.cbar = replot()
         # All.ax.set_xlim(All.data.xlim)
         # All.ax.set_ylim(All.data.ylim)
         All.syms = All.edits.plot(fullData)
@@ -468,7 +472,7 @@ def createGUI(fileName, variable, outFile, refFile, applyFile, nogui, overwrite)
 
     if not nogui:
         print("""
-Ignore all the controls in the toolbar at the top of the window.
+Ignore all the control icons in the toolbar in the window.
 Zoom in and out with the scroll wheel.
 Pan the view with the North, South, East and West buttons.
 Use +, -, Flip buttons to modify the colormap.
